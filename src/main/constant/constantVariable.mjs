@@ -1,0 +1,1 @@
+export const LOG_PATH = './public/log/portfolio.log'
