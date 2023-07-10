@@ -1,9 +1,8 @@
 import "dotenv/config";
-import { log, error } from "console";
 import { logger } from "../config/logger.mjs";
-import { StatusCodes } from "http-status-codes";
+import { StatusCodes,ReasonPhrases } from "http-status-codes";
 export const isValidUser = (userName, token) => {
-  logger.info(`UserName is : ${userName} and its token key is : ${token}`);
+  logger.debug(`UserName is : ${userName} and its token key is : ${token}`);
 
   if (userName !== process.env.GITHUB_USERNAME) {
     return "Not Valid userName";
@@ -18,23 +17,26 @@ export const isValidUser = (userName, token) => {
 };
 
 export const prepareResponse = (response, dtoName) => {
+  logger.debug(`Response for DTOModel Name : ${dtoName} \n response :  ${JSON.stringify(response)}`);
   const responseDTO = [];
   if (Array.isArray(response)) {
     for (let i = 0; i < response.length; i++) {
       let res = response[i];
-      logger.debug(`GitHub Repo is : ${JSON.stringify(res)}`);
       responseDTO.push(new dtoName({ ...res }));
     }
+  }else{
+    return response;
   }
   return responseDTO;
 };
 
 export const errorHandle = (err, req, res, next) => {
+  logger.info("status ",err.errStatusCode)
+  const statusCode = err.status || StatusCodes.INTERNAL_SERVER_ERROR;
+  const errorMessage = err.message || ReasonPhrases.INTERNAL_SERVER_ERROR;
   //handle the error
-  logger.error(err.message);
-  res.status(StatusCodes.BAD_REQUEST).send({
-    Response: err.message,
-  });
+  logger.error(errorMessage);
+  res.status(statusCode).send({ Response: errorMessage});
 };
 
 
@@ -44,6 +46,6 @@ export const methodStartExecuting =(methodName)=>{
 }
 
 export const methodEndExecuting =(methodName)=>{
-    logger.info(`Method ${methodName} End executing and below is the total time taken by this method.`);
+    logger.info(`Method ${methodName} End execution`);
     console.timeEnd(methodName);
 }

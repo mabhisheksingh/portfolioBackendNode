@@ -5,8 +5,8 @@ import { USER_REPO_PATH } from '../constant/urlPaths.mjs';
 import { getGitHub } from '../crud_operation/getAxios.mjs';
 import { isValidUser, methodEndExecuting, methodStartExecuting, prepareResponse } from '../utils/utils.mjs';
 import { StatusCodes } from 'http-status-codes';
-import {AllRepoList} from '../dto/GitHubDTO.js'
-import { logger } from '../config/logger.mjs';
+import {AllRepoList} from '../dto/GitHubDTO.mjs'
+
 const router = express.Router();
 
 

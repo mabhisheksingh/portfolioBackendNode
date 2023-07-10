@@ -2,6 +2,7 @@ import 'dotenv/config'
 import { createLogger, transports, format } from 'winston';
 import { LOG_PATH } from '../constant/constantVariable.mjs';
 
+const {colorize,timestamp, combine} =  format;
 const level = process.env.LEVEL || 'info'
 
 const customFormatter = format.printf( ({timestamp, message, level}) =>{
@@ -10,18 +11,13 @@ const customFormatter = format.printf( ({timestamp, message, level}) =>{
 
 export const logger = createLogger({
     level: level,
-    format: format.combine(format.timestamp() , customFormatter),
+    format: combine( timestamp({ format: new Date().toLocaleTimeString() } ) , customFormatter),
     transports:[
        new transports.File({
             filename: LOG_PATH ,
-            maxFiles:5,
-            maxsize: 1024,
-        }),
-        // new transports.Http({
-        //     host:'localhost',
-        //     port:'9001',
-        //     path:'metrics',
-        // })
+            maxFiles:3,
+            maxsize: 1024
+        })
     ],
     exitOnError:false
 })

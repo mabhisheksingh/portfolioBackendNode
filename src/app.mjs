@@ -12,7 +12,7 @@ app.use(V1_GITHUB, getAllRepo)
 
 
 //**This is common path not found handler */
-app.use('*', (req, res)=>{
+app.all('*', (req, res)=>{
     const errorMessage = `Not valid path ${req.originalUrl}`;
     logger.error(errorMessage)
     res.status(StatusCodes.BAD_REQUEST).send(errorMessage)
